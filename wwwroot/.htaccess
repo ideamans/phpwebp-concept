@@ -1,0 +1,9 @@
+AddType image/webp .webp
+
+RewriteEngine On
+
+RewriteCond %{HTTP_ACCEPT} !image/webp
+RewriteRule \.(webp) /phpwebp-concept/decompress.php [L]
+
+RewriteCond %{HTTP_ACCEPT} image/webp
+RewriteRule \.(jpe?g|png|gif) /phpwebp-concept/compress.php [L]

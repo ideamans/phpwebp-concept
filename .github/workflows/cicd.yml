@@ -1,0 +1,51 @@
+name: CI/CD
+on: push
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Test with docker-compose
+        run: docker-compose up --build --abort-on-container-exit --exit-code-from tester
+  release:
+    name: Release
+    needs: test
+    runs-on: ubuntu-20.04
+    if: startsWith( github.ref, 'refs/tags/v' )
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Variables
+        id: variables
+        run: |
+          echo "::set-output name=vtag::${GITHUB_REF##refs/tags/}"
+      - name: Setup node to release
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      - name: Build the package to release
+        run: |
+          yarn
+          yarn build "${GITHUB_REF#refs/tags/}"
+      - name: Create a new release
+        id: createNewRelease
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.variables.outputs.vtag }}
+          release_name: Release ${{ steps.variables.outputs.vtag }}
+          draft: false
+          prerelease: false
+      - name: Upload release package
+        uses: actions/upload-release-asset@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.createNewRelease.outputs.upload_url }}
+          asset_path: ./built/phpwebp-concept-${{ steps.variables.outputs.vtag }}.zip
+          asset_name: phpwebp-concept-${{ steps.variables.outputs.vtag }}.zip
+          asset_content_type: application/zip
