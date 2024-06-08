@@ -25,6 +25,8 @@ services:
       - php-74
       - php-80
       - php-81
+      - php-82
+      - php-83
   php-54:
     image: php:5.4-apache
     <<: *php-common
@@ -75,3 +77,13 @@ services:
     <<: *php-common
     ports:
       - 10810:80
+  php-82:
+    image: php:8.2-apache
+    <<: *php-common
+    ports:
+      - 10820:80
+  php-83:
+    image: php:8.3-apache
+    <<: *php-common
+    ports:
+      - 10830:80
