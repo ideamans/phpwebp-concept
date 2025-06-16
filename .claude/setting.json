@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:hub.docker.com)",
+      "Bash(curl:*)",
+      "WebFetch(domain:developers.google.com)",
+      "Bash(git checkout:*)",
+      "Bash(mkdir:*)",
+      "Bash(tar:*)",
+      "Bash(ls:*)",
+      "Bash(cp:*)",
+      "Bash(rm:*)",
+      "Bash(make test:*)",
+      "Bash(yq eval:*)",
+      "Bash(for:*)",
+      "Bash(do echo \"Testing PHP version: $php_version\")",
+      "Bash(PHP_VERSION=$php_version go test ./...)",
+      "Bash(exit 1)",
+      "Bash(done)",
+      "Bash(go clean:*)",
+      "Bash(PHP_VERSION=8.2 go test -v ./...)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git pull:*)",
+      "Bash(git cherry-pick:*)"
+    ],
+    "deny": []
+  }
+}
