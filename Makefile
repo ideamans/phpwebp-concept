@@ -14,7 +14,7 @@ test-all:
 	fi; \
 	for php_version in $$php_versions; do \
 		echo "Testing PHP version: $$php_version"; \
-		PHP_VERSION=$$php_version go test -v ./... || exit 1; \
+		PHP_VERSION=$$php_version go test ./... || exit 1; \
 	done
 	@echo "All tests passed!"
 
