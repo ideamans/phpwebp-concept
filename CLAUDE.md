@@ -41,8 +41,11 @@ PHP=7.4 yarn dev     # Start development server with specific PHP version
 # Go tests (new)
 make test            # Test with PHP version specified in PHP_VERSION env var
 make test-all        # Test all PHP versions sequentially
-PHP_VERSION=8.1 go test -v ./...  # Test specific PHP version
 
+# Test individual PHP versions
+PHP_VERSION=7.4 go test -v ./...   # Test PHP 7.4
+PHP_VERSION=8.1 go test -v ./...   # Test PHP 8.1
+PHP_VERSION=8.2 go test -v ./...   # Test PHP 8.2
 ```
 
 ### Building
@@ -92,18 +95,35 @@ The project uses AVA framework for testing with Docker Compose to test across PH
 
 ### Adding New PHP Versions
 1. Check https://hub.docker.com/_/php for available PHP versions
-2. Add the version to `.github/workflows/cicd.yml` matrix
-3. Run tests locally: `PHP_VERSION=X.X make test`
-4. Create PR if tests pass
+2. Create a new branch: `git checkout -b php-8.4` (use the actual PHP version)
+3. Add the version to `.github/workflows/cicd.yml` matrix
+4. Test the new version: `PHP_VERSION=8.4 go test -v ./...`
+5. Fix any issues found during testing
+6. Commit changes: `git commit -m "Add support for PHP 8.4"`
+7. Push branch: `git push -u origin php-8.4`
+8. Create pull request with title: "Add support for PHP 8.4"
 
 ### Updating libwebp
 1. Check current version in `.libwebp-version`
-2. Download new version from https://developers.google.com/speed/webp/docs/precompiled
-3. Extract binaries for each architecture:
+2. Create a new branch: `git checkout -b libwebp-1.5.0` (use the actual libwebp version)
+3. Download new version from https://developers.google.com/speed/webp/docs/precompiled
+4. Extract binaries for each architecture:
    - Linux x86_64 → `wwwroot/phpwebp-concept/bin/linux-x86_64/`
    - Linux ARM64 → `wwwroot/phpwebp-concept/bin/linux-aarch64/`
-4. Update `.libwebp-version` with new version number
-5. Run full test suite: `make test-all`
+5. Update `.libwebp-version` with new version number
+6. Run full test suite: `make test-all` to test all PHP versions
+7. Commit changes: `git commit -m "Update libwebp to 1.5.0"`
+8. Push branch: `git push -u origin libwebp-1.5.0`
+9. Create pull request with title: "Update libwebp to 1.5.0"
+
+### Updating Both PHP Version and libwebp
+When updating both PHP version and libwebp simultaneously:
+1. Create a combined branch: `git checkout -b php-8.4-libwebp-1.5.0`
+2. Follow steps from "Adding New PHP Versions" (steps 3-5)
+3. Follow steps from "Updating libwebp" (steps 3-6)
+4. Commit all changes: `git commit -m "Add PHP 8.4 support and update libwebp to 1.5.0"`
+5. Push branch: `git push -u origin php-8.4-libwebp-1.5.0`
+6. Create pull request with title: "Add PHP 8.4 support and update libwebp to 1.5.0"
 
 ### Adding New Architecture Support
 1. Create directory: `wwwroot/phpwebp-concept/bin/[os-architecture]/`
