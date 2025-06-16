@@ -19,7 +19,8 @@
   - 要 Rewrite モジュール
   - .htaccess または conf ファイルによる設定変更ができること
 - PHP
-  - 5.4 / 5.5 / 5.6 / 7.0 / 7.1 / 7.2 / 7.3 / 7.4 / 8.0 / 8.1 / 8.2 / 8.3 で動作確認
+  - 対応バージョンは `.github/workflows/cicd.yml` で管理
+  - 現在対応: 5.6 / 7.0 / 7.1 / 7.2 / 7.3 / 7.4 / 8.0 / 8.1 / 8.2
 
 ## インストール
 
@@ -74,37 +75,40 @@ WebP 非対応ブラウザで開発者ツール `Network` タブなどとあわ�
 
 ## カスタマイズ / コントリビュート
 
-Docker および NodeJS 16 を事前にインストールし、本プロジェクトを `clone` してください。
-
-### モジュールのインストール
-
-```bash
-yarn install
-```
-
-### デバッグ
-
-次のように PHP のバージョンを指定し、開発サーバーを起動できます。
-
-```bash
-PHP=7.4 yarn dev
-curl -I -H 'Accept: image/webp,*/*' http://localhost:8080/testing/regular.jpg
-```
+Docker および Go 1.21以上 を事前にインストールし、本プロジェクトを `clone` してください。
 
 ### テスト
 
-次のコマンドで各バージョンの PHP を Apache サーバーとして起動し、`test/test-phps.js` を実行します。
+Go言語で実装されたテストスイートを使用します。dockertestを使用してPHPコンテナを動的に起動し、テストを実行します。
 
 ```bash
-yarn test:auto | grep tester
-```
+# 単一のPHPバージョンをテスト（デフォルト: 8.1）
+make test
 
-PHP のバージョン指定も可能です。
+# 特定のPHPバージョンをテスト
+PHP_VERSION=7.4 make test
 
-```bash
-PHP=8.1 yarn test:auto | grep tester
+# すべてのPHPバージョンを順次テスト
+make test-all
 ```
 
 ### ビルド
 
 次のコマンドでリリースパッケージをビルドします。
+
+```bash
+# デフォルトバージョン（v1.0.0）でビルド
+make build
+
+# 特定のバージョンでビルド
+VERSION=v1.0.1 make build
+```
+
+リリースパッケージは `built/` ディレクトリに生成されます。
+
+### クリーンアップ
+
+```bash
+# テストキャッシュとDockerコンテナをクリーンアップ
+make clean
+```

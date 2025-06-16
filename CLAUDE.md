@@ -6,6 +6,24 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 PHPWebP Concept is a PHP-based middleware for automatic WebP image conversion on Apache web servers. It provides bidirectional conversion between traditional formats (JPEG/PNG/GIF) and WebP based on browser capabilities.
 
+## Version Management
+
+### PHP Versions
+- Supported PHP versions are managed in `.github/workflows/cicd.yml`
+- New PHP versions from https://hub.docker.com/_/php are added after passing tests
+- Currently supported: 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2
+
+### libwebp Updates
+- Check https://developers.google.com/speed/webp/docs/precompiled for new versions
+- Current version is tracked in `.libwebp-version` (currently 1.5.0)
+- Update process:
+  1. Download new binaries for supported architectures
+  2. Replace files in `wwwroot/phpwebp-concept/bin/[architecture]/`
+  3. Update `.libwebp-version` file
+  4. Test with all PHP versions
+- Required binaries: `cwebp`, `dwebp`, `gif2webp`, `webpinfo`
+- Supported architectures: `linux-x86_64`, `linux-aarch64`
+
 ## Common Development Commands
 
 ### Setup
@@ -25,9 +43,6 @@ make test            # Test with PHP version specified in PHP_VERSION env var
 make test-all        # Test all PHP versions sequentially
 PHP_VERSION=8.1 go test -v ./...  # Test specific PHP version
 
-# JavaScript tests (legacy - to be removed)
-yarn test:auto       # Run tests against all PHP versions
-PHP=8.1 yarn test:auto  # Test specific PHP version
 ```
 
 ### Building
@@ -73,45 +88,25 @@ The project uses AVA framework for testing with Docker Compose to test across PH
 - Error conditions and security
 - Performance optimizations
 
-## CI/CD Notes for Go Development
+## Development Guidelines
 
-### Windows Runner Issues
+### Adding New PHP Versions
+1. Check https://hub.docker.com/_/php for available PHP versions
+2. Add the version to `.github/workflows/cicd.yml` matrix
+3. Run tests locally: `PHP_VERSION=X.X make test`
+4. Create PR if tests pass
 
-When running Go commands in GitHub Actions on Windows runners, avoid using `./...` pattern directly as it can be misinterpreted. Windows may parse `./...` as `.txt` or other extensions.
+### Updating libwebp
+1. Check current version in `.libwebp-version`
+2. Download new version from https://developers.google.com/speed/webp/docs/precompiled
+3. Extract binaries for each architecture:
+   - Linux x86_64 → `wwwroot/phpwebp-concept/bin/linux-x86_64/`
+   - Linux ARM64 → `wwwroot/phpwebp-concept/bin/linux-aarch64/`
+4. Update `.libwebp-version` with new version number
+5. Run full test suite: `make test-all`
 
-**Problem Example:**
-
-```yaml
-# This may fail on Windows
-run: go test -c -o storemanager.test ./...
-```
-
-**Solutions:**
-
-1. Use explicit package path:
-
-```yaml
-run: go test -c -o storemanager.test github.com/ideamans/lightfile6-batch-store-manager
-```
-
-2. Use `.` for current directory:
-
-```yaml
-run: go test -c -o storemanager.test .
-```
-
-3. Use PowerShell with proper escaping:
-
-```yaml
-shell: pwsh
-run: go test -c -o storemanager.test .\...
-```
-
-4. Set working directory explicitly:
-
-```yaml
-working-directory: ${{ github.workspace }}
-run: go test -c -o storemanager.test ./...
-```
-
-This is a common issue when developing cross-platform Go applications and should be considered when writing GitHub Actions workflows.
+### Adding New Architecture Support
+1. Create directory: `wwwroot/phpwebp-concept/bin/[os-architecture]/`
+2. Add compiled binaries: `cwebp`, `dwebp`, `gif2webp`, `webpinfo`
+3. Make binaries executable: `chmod +x wwwroot/phpwebp-concept/bin/[os-architecture]/*`
+4. Test on target architecture
