@@ -1,10 +1,10 @@
 {
   "permissions": {
-    "file_system": {
-      "read": true,
-      "write": true
-    },
     "allow": [
+      "Read(**)",
+      "Edit(.github/workflows/**)",
+      "Edit(wwwroot/phpwebp-concept/bin/**)",
+      "Edit(.libwebp-version)",
       "WebFetch(domain:hub.docker.com)",
       "Bash(curl:*)",
       "WebFetch(domain:developers.google.com)",
