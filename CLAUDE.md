@@ -11,6 +11,7 @@ PHPWebP Concept is a PHP-based middleware for automatic WebP image conversion on
 ### PHP Versions
 - Supported PHP versions are managed in `.github/workflows/cicd.yml`
 - New PHP versions from https://hub.docker.com/_/php are added after passing tests
+- PHP versions don't need to be stable releases - any version available on Docker Hub without beta/alpha/rc tags is acceptable
 - Currently supported: 5.6, 7.0, 7.1, 7.2, 7.3, 7.4, 8.0, 8.1, 8.2
 
 ### libwebp Updates
