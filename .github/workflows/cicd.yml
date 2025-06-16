@@ -33,10 +33,20 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - name: Variables
         id: variables
         run: |
-          echo "::set-output name=vtag::${GITHUB_REF##refs/tags/}"
+          echo "vtag=${GITHUB_REF##refs/tags/}" >> $GITHUB_OUTPUT
+          
+      - name: Get tag message
+        id: tag_message
+        run: |
+          TAG_MESSAGE=$(git tag -l --format='%(contents)' ${GITHUB_REF##refs/tags/})
+          echo "message<<EOF" >> $GITHUB_OUTPUT
+          echo "$TAG_MESSAGE" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
       - name: Build the package to release
         run: |
           VERSION="${GITHUB_REF#refs/tags/}" make build
@@ -48,6 +58,7 @@ jobs:
         with:
           tag_name: ${{ steps.variables.outputs.vtag }}
           release_name: Release ${{ steps.variables.outputs.vtag }}
+          body: ${{ steps.tag_message.outputs.message }}
           draft: false
           prerelease: false
       - name: Upload release package
