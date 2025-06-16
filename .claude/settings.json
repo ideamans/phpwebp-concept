@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "file_system": {
+      "read": true,
+      "write": true
+    }
+  }
+}
