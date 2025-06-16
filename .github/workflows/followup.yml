@@ -17,7 +17,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.21'
+          go-version: "1.21"
 
       - name: Install yq
         run: |
@@ -27,17 +27,13 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "claude-code[bot]"
+          git config --global user.email "claude-code[bot]@ideamans.com"
 
-      - name: Install Claude CLI
-        run: |
-          curl -fsSL https://raw.githubusercontent.com/anthropics/claude-code/main/install.sh | bash
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-
-      - name: Check for updates and create PR
-        env:
-          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          claude -p 'PHPとlibwebpの更新の必要があればPRを作成してください'
+      - uses: anthropics/claude-code-action@beta
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          timeout_minutes: "10"
+          direct_prompt: |
+            PHPとlibwebpの更新の必要があればPRを作成してください。
