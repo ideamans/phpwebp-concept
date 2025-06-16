@@ -1,15 +1,30 @@
 name: CI/CD
-on: push
+on: ['push', 'pull_request']
 
 jobs:
   test:
-    name: Test
+    name: Test PHP ${{ matrix.php-version }}
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Test with docker compose
-        run: docker compose up --build --abort-on-container-exit --exit-code-from tester
+      
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.21'
+      
+      - name: Download Go modules
+        run: go mod download
+      
+      - name: Run tests
+        env:
+          PHP_VERSION: ${{ matrix.php-version }}
+        run: go test -v ./...
+  
   release:
     name: Release
     needs: test
@@ -22,14 +37,9 @@ jobs:
         id: variables
         run: |
           echo "::set-output name=vtag::${GITHUB_REF##refs/tags/}"
-      - name: Setup node to release
-        uses: actions/setup-node@v4
-        with:
-          node-version: 22
       - name: Build the package to release
         run: |
-          yarn
-          yarn build "${GITHUB_REF#refs/tags/}"
+          VERSION="${GITHUB_REF#refs/tags/}" make build
       - name: Create a new release
         id: createNewRelease
         uses: actions/create-release@v1
