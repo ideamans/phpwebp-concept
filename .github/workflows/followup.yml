@@ -27,13 +27,21 @@ jobs:
 
       - name: Set up Git
         run: |
-          git config --global user.name "claude-code[bot]"
-          git config --global user.email "claude-code[bot]@ideamans.com"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
-      - uses: anthropics/claude-code-action@beta
+      - name: Install bun
+        uses: oven-sh/setup-bun@v2
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          timeout_minutes: "10"
-          direct_prompt: |
-            PHPとlibwebpの更新の必要があればPRを作成してください。
+          bun-version: latest
+
+      - name: Install Claude Code CLI
+        run: |
+          bun add -g @anthropic-ai/claude-code
+
+      - name: Check for updates and create PR
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          claude -p 'PHPとlibwebpの更新の必要があればPRを作成してください'
