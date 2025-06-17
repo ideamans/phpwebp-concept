@@ -18,8 +18,8 @@ jobs:
             echo "Error: .php-versions file is required but not found"
             exit 1
           fi
-          # Read versions from file, excluding comments and empty lines
-          versions=$(grep -v '^#' .php-versions | grep -v '^$' | jq -R . | jq -s .)
+          # Read versions from file, excluding comments and empty lines, and format as compact JSON array
+          versions=$(grep -v '^#' .php-versions | grep -v '^$' | jq -R . | jq -s -c .)
           echo "phpVersions=$versions" >> $GITHUB_OUTPUT
 
   test:
