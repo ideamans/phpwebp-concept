@@ -7,7 +7,9 @@ test:
 # Test all PHP versions sequentially
 test-all:
 	@echo "Testing all PHP versions..."
-	@if command -v yq >/dev/null 2>&1; then \
+	@if [ -f .php-versions ]; then \
+		php_versions=$$(grep -v '^#' .php-versions | grep -v '^$$'); \
+	elif command -v yq >/dev/null 2>&1; then \
 		php_versions=$$(yq eval '.jobs.test.strategy.matrix."php-version"[]' .github/workflows/cicd.yml); \
 	else \
 		php_versions="8.1"; \

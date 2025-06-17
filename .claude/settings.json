@@ -2,9 +2,9 @@
   "permissions": {
     "allow": [
       "Read(**)",
-      "Edit(.github/workflows/**)",
-      "Edit(wwwroot/phpwebp-concept/bin/**)",
+      "Edit(.php-versions)",
       "Edit(.libwebp-version)",
+      "Edit(wwwroot/phpwebp-concept/bin/**)",
       "WebFetch(domain:hub.docker.com)",
       "Bash(curl:*)",
       "WebFetch(domain:developers.google.com)",
