@@ -113,17 +113,22 @@ The project uses AVA framework for testing with Docker Compose to test across PH
 4. Extract binaries for each architecture:
    - Linux x86_64 → `wwwroot/phpwebp-concept/bin/linux-x86_64/`
    - Linux ARM64 → `wwwroot/phpwebp-concept/bin/linux-aarch64/`
-5. Update `.libwebp-version` with new version number
-6. Run full test suite: `make test-all` to test all PHP versions
-7. Commit changes: `git commit -m "Update libwebp to 1.5.0"`
-8. Push branch: `git push -u origin libwebp-1.5.0`
-9. Create pull request with title: "Update libwebp to 1.5.0"
+5. **IMPORTANT**: Set execute permissions on all binaries:
+   ```bash
+   chmod +x wwwroot/phpwebp-concept/bin/linux-aarch64/*
+   chmod +x wwwroot/phpwebp-concept/bin/linux-x86_64/*
+   ```
+6. Update `.libwebp-version` with new version number
+7. Run full test suite: `make test-all` to test all PHP versions
+8. Commit changes: `git commit -m "Update libwebp to 1.5.0"`
+9. Push branch: `git push -u origin libwebp-1.5.0`
+10. Create pull request with title: "Update libwebp to 1.5.0"
 
 ### Updating Both PHP Version and libwebp
 When updating both PHP version and libwebp simultaneously:
 1. Create a combined branch: `git checkout -b php-8.4-libwebp-1.5.0`
 2. Follow steps from "Adding New PHP Versions" (steps 3-5)
-3. Follow steps from "Updating libwebp" (steps 3-6)
+3. Follow steps from "Updating libwebp" (steps 3-7)
 4. Commit all changes: `git commit -m "Add PHP 8.4 support and update libwebp to 1.5.0"`
 5. Push branch: `git push -u origin php-8.4-libwebp-1.5.0`
 6. Create pull request with title: "Add PHP 8.4 support and update libwebp to 1.5.0"
@@ -131,5 +136,14 @@ When updating both PHP version and libwebp simultaneously:
 ### Adding New Architecture Support
 1. Create directory: `wwwroot/phpwebp-concept/bin/[os-architecture]/`
 2. Add compiled binaries: `cwebp`, `dwebp`, `gif2webp`, `webpinfo`
-3. Make binaries executable: `chmod +x wwwroot/phpwebp-concept/bin/[os-architecture]/*`
+3. **IMPORTANT**: Make binaries executable: `chmod +x wwwroot/phpwebp-concept/bin/[os-architecture]/*`
 4. Test on target architecture
+
+## Important Notes
+
+### Binary File Permissions
+When updating any program files under `wwwroot/phpwebp-concept/bin/`, always ensure to set execute permissions:
+```bash
+chmod +x wwwroot/phpwebp-concept/bin/[architecture]/*
+```
+This is required for the binaries to function properly on the server.
