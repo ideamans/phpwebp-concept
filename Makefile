@@ -9,10 +9,9 @@ test-all:
 	@echo "Testing all PHP versions..."
 	@if [ -f .php-versions ]; then \
 		php_versions=$$(grep -v '^#' .php-versions | grep -v '^$$'); \
-	elif command -v yq >/dev/null 2>&1; then \
-		php_versions=$$(yq eval '.jobs.test.strategy.matrix."php-version"[]' .github/workflows/cicd.yml); \
 	else \
-		php_versions="8.1"; \
+		echo "Error: .php-versions file not found"; \
+		exit 1; \
 	fi; \
 	for php_version in $$php_versions; do \
 		echo "Testing PHP version: $$php_version"; \
