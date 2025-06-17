@@ -13,6 +13,7 @@
       "Bash(tar:*)",
       "Bash(ls:*)",
       "Bash(cp:*)",
+      "Bash(chmod:*)",
       "Bash(rm:*)",
       "Bash(make test:*)",
       "Bash(yq eval:*)",
