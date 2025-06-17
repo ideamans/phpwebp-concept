@@ -14,14 +14,13 @@ jobs:
       - name: Read PHP versions
         id: read-versions
         run: |
-          if [ -f .php-versions ]; then
-            # Read versions from file and format as JSON array
-            versions=$(cat .php-versions | grep -v '^#' | grep -v '^$' | jq -R . | jq -s .)
-            echo "phpVersions=$versions" >> $GITHUB_OUTPUT
-          else
-            # Default versions if file doesn't exist
-            echo 'phpVersions=["5.6", "7.0", "7.1", "7.2", "7.3", "7.4", "8.0", "8.1", "8.2"]' >> $GITHUB_OUTPUT
+          if [ ! -f .php-versions ]; then
+            echo "Error: .php-versions file is required but not found"
+            exit 1
           fi
+          # Read versions from file, excluding comments and empty lines
+          versions=$(grep -v '^#' .php-versions | grep -v '^$' | jq -R . | jq -s .)
+          echo "phpVersions=$versions" >> $GITHUB_OUTPUT
 
   test:
     name: Test PHP ${{ matrix.php-version }}

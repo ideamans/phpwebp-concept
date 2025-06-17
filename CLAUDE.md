@@ -9,8 +9,9 @@ PHPWebP Concept is a PHP-based middleware for automatic WebP image conversion on
 ## Version Management
 
 ### PHP Versions
-- Supported PHP versions are managed in `.php-versions` file
+- Supported PHP versions are managed in `.php-versions` file (required)
 - The CI/CD workflow reads PHP versions from `.php-versions` automatically
+- Comments (lines starting with #) and empty lines are ignored
 - New PHP versions from https://hub.docker.com/_/php are added after passing tests
 - PHP versions don't need to be stable releases - any version available on Docker Hub without beta/alpha/rc tags is acceptable
 - To add/remove PHP versions, edit `.php-versions` file (one version per line)
@@ -98,7 +99,7 @@ The project uses AVA framework for testing with Docker Compose to test across PH
 ### Adding New PHP Versions
 1. Check https://hub.docker.com/_/php for available PHP versions
 2. Create a new branch: `git checkout -b php-8.4` (use the actual PHP version)
-3. Add the version to `.github/workflows/cicd.yml` matrix
+3. Add the version to `.php-versions` file
 4. Test the new version: `PHP_VERSION=8.4 go test -v ./...`
 5. Fix any issues found during testing
 6. Commit changes: `git commit -m "Add support for PHP 8.4"`
