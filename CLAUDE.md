@@ -88,11 +88,20 @@ VERSION=v1.0.1 make build  # Build with specific version
 
 ## Testing
 
-The project uses AVA framework for testing with Docker Compose to test across PHP versions 5.4 - 8.3. Tests verify:
+Tests are written in Go (`phpwebp_test.go`) and use dockertest to start an official `php:<version>-apache`
+container per PHP version listed in `.php-versions`, then request images through Apache. Tests verify:
 - Format conversion functionality
-- Browser compatibility handling
-- Error conditions and security
-- Performance optimizations
+- Browser compatibility handling (with and without `Accept: image/webp`)
+- 404 handling
+
+The official PHP images have `display_errors` enabled by default, so a deprecation warning at runtime
+corrupts the image response and fails the test. A passing run therefore also means no runtime warnings.
+
+If Docker runs under colima (or any non-default socket), dockertest cannot find `/var/run/docker.sock`
+and fails with `dial unix /var/run/docker.sock`. Set `DOCKER_HOST` first:
+```bash
+export DOCKER_HOST=$(docker context inspect --format '{{.Endpoints.docker.Host}}')
+```
 
 ## Development Guidelines
 
